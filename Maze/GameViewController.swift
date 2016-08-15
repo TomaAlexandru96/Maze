@@ -14,15 +14,30 @@ class GameViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        chenageViewToGameScene()
-    }
-
-    func chenageViewToGameScene() {
         let skView = self.view as! SKView
         skView.ignoresSiblingOrder = true
+        chenageViewToMenuScene()
+    }
+
+    func chenageViewToGameScene(configuration: MazeConfiguration) {
+        let skView = self.view as! SKView
         
         currentScene = GameScene(size: skView.bounds.size)
         currentScene.scaleMode = .AspectFill
+        let scene = self.currentScene as! GameScene
+        scene.gvc = self
+        scene.gameConfiguration = configuration
+        
+        skView.presentScene(currentScene)
+    }
+    
+    func chenageViewToMenuScene() {
+        let skView = self.view as! SKView
+        
+        currentScene = MenuScene(size: skView.bounds.size)
+        currentScene.scaleMode = .AspectFill
+        let scene = self.currentScene as! MenuScene
+        scene.gvc = self
         
         skView.presentScene(currentScene)
     }

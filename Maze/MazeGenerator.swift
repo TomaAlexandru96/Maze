@@ -76,15 +76,15 @@ class MazeGenerator {
     // SpriteKit functions ----------------------------------------------------------------
     // returns the mazeSprite
     static func getMazeSprite(configuration conf: MazeConfiguration,
-                            maze: [Tile : Set<Tile>], root: SKNode) -> SKSpriteNode {
+                            maze: [Tile : Set<Tile>]) -> SKSpriteNode {
         let conf = getTrueConfiguration(conf)
         let mazeSprite = SKSpriteNode()
         mazeSprite.anchorPoint =  CGPoint(x: 0, y: 1)
         mazeSprite.color = DEFAULT_MAZE_COLOR
         mazeSprite.size = CGSize(width: CGFloat(conf.columns - 2) * (conf.blockSize + conf.wallThickness) + conf.wallThickness,
                                  height: CGFloat(conf.rows - 2) * (conf.blockSize + conf.wallThickness) + conf.wallThickness)
-        mazeSprite.position = CGPoint(x: root.frame.midX - mazeSprite.frame.width / 2,
-                                      y: root.frame.midY + mazeSprite.frame.height / 2)
+        mazeSprite.position = CGPoint(x: -(mazeSprite.frame.width / 2),
+                                      y: mazeSprite.frame.height / 2)
         
         setGaps(conf, root: mazeSprite)
         setWalls(conf, maze: maze, root: mazeSprite)

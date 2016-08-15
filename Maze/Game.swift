@@ -11,11 +11,15 @@ import SpriteKit
 class Game {
     let maze: Maze
     
-    init(root: SKNode) {
-        maze = Maze(root: root)
+    init(configuration: MazeConfiguration) {
+        maze = Maze(configuration: configuration)
     }
     
     func generateNewMaze() {
         maze.generateNewMaze()
+    }
+    
+    func setSprites(root: SKNode) {
+        maze.setSprite(root)
     }
 }
