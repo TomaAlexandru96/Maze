@@ -8,14 +8,15 @@
 
 import SpriteKit
 
-let DEFAULT_BACKGROUND_COLOR: UIColor = UIColor.whiteColor()
-let DEFAULT_TEXT_COLOR: UIColor = UIColor.blackColor()
-let HIGHLIGHT_ALPHA: CGFloat = 0.7
-let DEFAULT_ALPHA: CGFloat = 1
-let DEFAULT_BUTTON_SIZE: CGSize = CGSize(width: 100, height: 50)
-let DEFAULT_BUTTON_ACTION: (sender: SKNode) -> () = {(sender) in fatalError("Function not set in SKButton")}
-
 class SKButton: SKNode {
+    private static let LABEL_OVERSIZE_OFFSET: CGFloat = 20
+    private static let DEFAULT_BACKGROUND_COLOR: UIColor = UIColor.whiteColor()
+    private static let DEFAULT_TEXT_COLOR: UIColor = UIColor.blackColor()
+    private static let HIGHLIGHT_ALPHA: CGFloat = 0.7
+    private static let DEFAULT_ALPHA: CGFloat = 1
+    private static let DEFAULT_BUTTON_SIZE: CGSize = CGSize(width: 100, height: 50)
+    private static let DEFAULT_BUTTON_ACTION: (sender: SKNode) -> () = {(sender) in fatalError("Function not set in SKButton")}
+    
     private let root: SKNode = SKNode()
     private let background: SKSpriteNode
     private let textNode: SKLabelNode
@@ -29,6 +30,12 @@ class SKButton: SKNode {
         }
     }
     
+    override var frame: CGRect {
+        get {
+            return calculateAccumulatedFrame()
+        }
+    }
+    
     var fontName: String? {
         get {
             return textNode.fontName
@@ -36,6 +43,7 @@ class SKButton: SKNode {
         
         set {
             textNode.fontName = newValue
+            resizeToFitLabel()
         }
     }
     
@@ -46,6 +54,7 @@ class SKButton: SKNode {
         
         set {
             textNode.fontSize = newValue
+            resizeToFitLabel()
         }
     }
     
@@ -56,6 +65,7 @@ class SKButton: SKNode {
         
         set {
             background.size = newValue
+            resizeToFitLabel()
         }
     }
     
@@ -66,6 +76,7 @@ class SKButton: SKNode {
         
         set {
             textNode.text = newValue
+            resizeToFitLabel()
         }
     }
     
@@ -76,6 +87,7 @@ class SKButton: SKNode {
         
         set {
             textNode.fontColor = newValue
+            resizeToFitLabel()
         }
     }
     
@@ -96,6 +108,7 @@ class SKButton: SKNode {
         
         set {
             textNode.horizontalAlignmentMode = newValue
+            resizeToFitLabel()
         }
     }
     
@@ -106,6 +119,7 @@ class SKButton: SKNode {
         
         set {
             textNode.verticalAlignmentMode = newValue
+            resizeToFitLabel()
         }
     }
     
@@ -138,7 +152,7 @@ class SKButton: SKNode {
     }
     
     private func setTextNode() {
-        textColor = DEFAULT_TEXT_COLOR
+        textColor = SKButton.DEFAULT_TEXT_COLOR
         horizontalAlignmentMode = .Center
         verticalAlignmentMode = .Center
         textNode.zPosition = background.zPosition + 1
@@ -146,20 +160,26 @@ class SKButton: SKNode {
     }
     
     private func setBackground() {
-        backgroundColor = DEFAULT_BACKGROUND_COLOR
+        backgroundColor = SKButton.DEFAULT_BACKGROUND_COLOR
         root.addChild(background)
     }
     
+    private func resizeToFitLabel() {
+        let textFrameSize = textNode.frame.size
+        background.size.width = max(textFrameSize.width + SKButton.LABEL_OVERSIZE_OFFSET, background.size.width)
+        background.size.height = max(textFrameSize.height + SKButton.LABEL_OVERSIZE_OFFSET, background.size.height)
+    }
+    
     convenience override init() {
-        self.init(texture: nil, size: DEFAULT_BUTTON_SIZE, action: DEFAULT_BUTTON_ACTION)
+        self.init(texture: nil, size: SKButton.DEFAULT_BUTTON_SIZE, action: SKButton.DEFAULT_BUTTON_ACTION)
     }
     
     convenience init(action: (sender: SKNode) -> ()) {
-        self.init(texture: nil, size: DEFAULT_BUTTON_SIZE, action: action)
+        self.init(texture: nil, size: SKButton.DEFAULT_BUTTON_SIZE, action: action)
     }
     
     convenience init(size: CGSize) {
-        self.init(texture: nil, size: size, action: DEFAULT_BUTTON_ACTION)
+        self.init(texture: nil, size: size, action: SKButton.DEFAULT_BUTTON_ACTION)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -167,11 +187,11 @@ class SKButton: SKNode {
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        root.alpha = HIGHLIGHT_ALPHA
+        root.alpha = SKButton.HIGHLIGHT_ALPHA
     }
     
     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        root.alpha = DEFAULT_ALPHA
+        root.alpha = SKButton.DEFAULT_ALPHA
         for touch in touches {
             for node in nodesAtPoint(touch.locationInNode(self)) {
                 if node == background {

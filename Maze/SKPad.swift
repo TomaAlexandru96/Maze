@@ -9,19 +9,6 @@
 import SpriteKit
 import Darwin
 
-let DEFAULT_RADIUS: CGFloat = 50
-let DEFAULT_COLOR: UIColor = UIColor.whiteColor()
-let PAD_RANGE_RATIO: CGFloat = 0.5
-let RANGE_ALPHA: CGFloat = 0.3
-let PAD_ALPHA: CGFloat = 2
-let NULLZONE_RANGE_RATIO: CGFloat = 0.3
-let TRANSPARENT_COLOR: UIColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0)
-
-let ANGLE_45  = CGFloat(M_PI / 4)
-let ANGLE_135 = CGFloat(3 * M_PI / 4)
-let ANGLE_225 = CGFloat(5 * M_PI / 4)
-let ANGLE_315 = CGFloat(7 * M_PI / 4)
-
 enum PadMode: Int {
     case Static = 0, Dynamic
 }
@@ -31,6 +18,18 @@ enum PadDirection: Int {
 }
 
 class SKPad: SKNode {
+    private static let DEFAULT_RADIUS: CGFloat = 50
+    private static let DEFAULT_COLOR: UIColor = UIColor.whiteColor()
+    private static let PAD_RANGE_RATIO: CGFloat = 0.5
+    private static let RANGE_ALPHA: CGFloat = 0.3
+    private static let PAD_ALPHA: CGFloat = 2
+    private static let NULLZONE_RANGE_RATIO: CGFloat = 0.3
+    private static let TRANSPARENT_COLOR: UIColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0)
+    private static let ANGLE_45  = CGFloat(M_PI / 4)
+    private static let ANGLE_135 = CGFloat(3 * M_PI / 4)
+    private static let ANGLE_225 = CGFloat(5 * M_PI / 4)
+    private static let ANGLE_315 = CGFloat(7 * M_PI / 4)
+    
     private let padShowAnimation = SKAction.fadeAlphaTo(PAD_ALPHA, duration: 0.1)
     private let padHideAnimation = SKAction.fadeAlphaTo(0, duration: 0.1)
     private let rangeShowAnimation = SKAction.fadeAlphaTo(RANGE_ALPHA, duration: 0.2)
@@ -69,19 +68,19 @@ class SKPad: SKNode {
     init(radius: CGFloat, mode: PadMode, touchZone: CGSize) {
         self.rangeRadius = radius
         range = SKShapeNode(circleOfRadius: radius)
-        pad = SKShapeNode(circleOfRadius: radius * PAD_RANGE_RATIO)
+        pad = SKShapeNode(circleOfRadius: radius * SKPad.PAD_RANGE_RATIO)
         self.mode = mode
-        self.touchZone = SKSpriteNode(color: TRANSPARENT_COLOR, size: touchZone)
+        self.touchZone = SKSpriteNode(color: SKPad.TRANSPARENT_COLOR, size: touchZone)
         super.init()
         setProperties()
     }
     
     convenience init(mode: PadMode, touchZone: CGSize) {
-        self.init(radius: DEFAULT_RADIUS, mode: mode, touchZone: touchZone)
+        self.init(radius: SKPad.DEFAULT_RADIUS, mode: mode, touchZone: touchZone)
     }
     
     convenience override init() {
-        self.init(radius: DEFAULT_RADIUS, mode: PadMode.Static, touchZone: CGSize.zero)
+        self.init(radius: SKPad.DEFAULT_RADIUS, mode: PadMode.Static, touchZone: CGSize.zero)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -89,7 +88,7 @@ class SKPad: SKNode {
     }
     
     private func setProperties() {
-        color = DEFAULT_COLOR
+        color = SKPad.DEFAULT_COLOR
         
         setTouchZone()
         setRange()
@@ -106,7 +105,7 @@ class SKPad: SKNode {
     }
     
     private func setRange() {
-        range.alpha = RANGE_ALPHA
+        range.alpha = SKPad.RANGE_ALPHA
         range.zPosition = touchZone.zPosition + 1
         
         if mode == PadMode.Dynamic {
@@ -121,6 +120,10 @@ class SKPad: SKNode {
         pad.alpha = 0
         pad.zPosition = range.zPosition + 1
         pad.hidden = true
+        
+        if mode == PadMode.Dynamic {
+            pad.alpha = SKPad.PAD_ALPHA
+        }
         
         range.addChild(pad)
     }
@@ -147,7 +150,7 @@ class SKPad: SKNode {
         }
         
         let direction = CGVector(dx: point.x, dy: point.y)
-        if direction.magnitude() > rangeRadius * NULLZONE_RANGE_RATIO {
+        if direction.magnitude() > rangeRadius * SKPad.NULLZONE_RANGE_RATIO {
             return direction.normalise()
         } else {
             return CGVector.zero
@@ -167,12 +170,12 @@ class SKPad: SKNode {
         }
         
         switch tuple {
-        case let (x, y) where x < cos(ANGLE_45) && x > cos(ANGLE_135) &&
-                              y > sin(ANGLE_45): return .Top
-        case let (x, y) where x < cos(ANGLE_135) &&
-                              y < sin(ANGLE_135) && y > sin(ANGLE_225): return .Left
-        case let (x, y) where x > cos(ANGLE_225) && x < cos(ANGLE_315) &&
-                              y < sin(ANGLE_225): return .Bottom
+        case let (x, y) where x < cos(SKPad.ANGLE_45) && x > cos(SKPad.ANGLE_135) &&
+                              y > sin(SKPad.ANGLE_45): return .Top
+        case let (x, y) where x < cos(SKPad.ANGLE_135) &&
+                              y < sin(SKPad.ANGLE_135) && y > sin(SKPad.ANGLE_225): return .Left
+        case let (x, y) where x > cos(SKPad.ANGLE_225) && x < cos(SKPad.ANGLE_315) &&
+                              y < sin(SKPad.ANGLE_225): return .Bottom
         default: return .Right
         }
     }
@@ -194,12 +197,10 @@ class SKPad: SKNode {
                 self.padHideAnimationActive = false
             })
         } else {
-            pad.runAction(padHideAnimation, completion: {
-                self.range.runAction(self.rangeHideAnimation, completion: {
-                    self.pad.hidden = true
-                    self.range.hidden = true
-                    self.padHideAnimationActive = false
-                })
+            range.runAction(rangeHideAnimation, completion: {
+                self.pad.hidden = true
+                self.range.hidden = true
+                self.padHideAnimationActive = false
             })
         }
     }
@@ -223,9 +224,7 @@ class SKPad: SKNode {
             pad.runAction(padShowAnimation, completion: completition)
         } else {
             range.hidden = false
-            range.runAction(rangeShowAnimation, completion: {
-                self.pad.runAction(self.padShowAnimation, completion: completition)
-            })
+            range.runAction(rangeShowAnimation, completion: completition)
         }
     }
     

@@ -17,6 +17,7 @@
 		223DE74E1D5FC79800A18925 /* MazeGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223DE74D1D5FC79800A18925 /* MazeGenerator.swift */; };
 		2273E8CB1D62194B00586D76 /* MenuScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2273E8CA1D62194B00586D76 /* MenuScene.swift */; };
 		2273E8CF1D62215000586D76 /* SKButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2273E8CE1D62215000586D76 /* SKButton.swift */; };
+		22848E051D631689003376FF /* SKCluster.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22848E041D631689003376FF /* SKCluster.swift */; };
 		22A066BD1D626532008E2005 /* SKPad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A066BC1D626532008E2005 /* SKPad.swift */; };
 		22AD9DF11D60B7A9008E2C99 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22AD9DF01D60B7A9008E2C99 /* Game.swift */; };
 		22D0666D1D60A2C500E0AD29 /* Wall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22D0666C1D60A2C500E0AD29 /* Wall.swift */; };
@@ -39,6 +40,7 @@
 		223DE74D1D5FC79800A18925 /* MazeGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MazeGenerator.swift; sourceTree = "<group>"; };
 		2273E8CA1D62194B00586D76 /* MenuScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuScene.swift; sourceTree = "<group>"; };
 		2273E8CE1D62215000586D76 /* SKButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SKButton.swift; sourceTree = "<group>"; };
+		22848E041D631689003376FF /* SKCluster.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SKCluster.swift; sourceTree = "<group>"; };
 		22A066BC1D626532008E2005 /* SKPad.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SKPad.swift; sourceTree = "<group>"; };
 		22AD9DF01D60B7A9008E2C99 /* Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		22D0666C1D60A2C500E0AD29 /* Wall.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Wall.swift; sourceTree = "<group>"; };
@@ -132,6 +134,7 @@
 			children = (
 				2273E8CE1D62215000586D76 /* SKButton.swift */,
 				22A066BC1D626532008E2005 /* SKPad.swift */,
+				22848E041D631689003376FF /* SKCluster.swift */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -231,6 +234,7 @@
 			files = (
 				22ED55501D60F3760065CD7F /* Utility.swift in Sources */,
 				223DE7371D5FC70100A18925 /* GameScene.swift in Sources */,
+				22848E051D631689003376FF /* SKCluster.swift in Sources */,
 				22AD9DF11D60B7A9008E2C99 /* Game.swift in Sources */,
 				22D0666D1D60A2C500E0AD29 /* Wall.swift in Sources */,
 				22D066711D60A89A00E0AD29 /* Tile.swift in Sources */,

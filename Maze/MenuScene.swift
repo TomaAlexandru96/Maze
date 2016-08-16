@@ -14,11 +14,19 @@ class MenuScene: SKScene {
     override func didMoveToView(view: SKView) {
         backgroundColor = UIColor.blackColor()
         
+        let menuCluster = SKCluster(orientation: ClusterOrientation.Vertical)
+        menuCluster.position = frame.center
+        
         let playButton = SKButton(action: changeSceneToGameScene)
-        playButton.position = frame.center
         playButton.text = "Play"
         
-        addChild(playButton)
+        let playFreeButton = SKButton(action: changeSceneToGameScene)
+        playFreeButton.text = "Play Free"
+        
+        menuCluster.append(playButton)
+        menuCluster.append(playFreeButton)
+        
+        addChild(menuCluster)
     }
     
     func changeSceneToGameScene(sender: SKNode) {
