@@ -12,9 +12,13 @@ import Darwin
 let MAX_ZOOM_OUT: CGFloat = 0.1
 let MAX_ZOOM_IN:CGFloat = 4
 let BOUNDS_OFFSET: CGFloat = 100
+let PAD_OFFSET: CGFloat = 90
+let PAD_TOUCH_ZONE_SIZE: CGSize = CGSize(width: 150, height: 150)
 
 class GameScene: SKScene {
     let gameObjectsLayer: SKNode = SKNode()
+    let gameUILayer: SKNode = SKNode()
+    let gamePad: SKPad = SKPad(mode: PadMode.Dynamic, touchZone: PAD_TOUCH_ZONE_SIZE)
     var game: Game!
     var gvc: GameViewController!
     var gameConfiguration: MazeConfiguration = MazeConfiguration.defaultConfig
@@ -23,14 +27,25 @@ class GameScene: SKScene {
         backgroundColor = UIColor.blackColor()
         setGestures(view)
         setGameObjects()
+        setUIObjects()
     }
     
     func setGameObjects() {
-        gameObjectsLayer.position = CGPoint(x: frame.midX, y: frame.midY)
+        gameObjectsLayer.position = frame.center
         game = Game(configuration: gameConfiguration)
         game.setSprites(gameObjectsLayer)
         
         addChild(gameObjectsLayer)
+    }
+    
+    func setUIObjects() {
+        var padPositionOnScreen = CGPoint(x: frame.minX + PAD_OFFSET, y: frame.minY + PAD_OFFSET)
+        gameUILayer.position = frame.center
+        padPositionOnScreen = gameUILayer.convertPoint(padPositionOnScreen, fromNode: self)
+        gamePad.position = padPositionOnScreen
+        
+        gameUILayer.addChild(gamePad)
+        addChild(gameUILayer)
     }
     
     func setGestures(view: SKView) {
@@ -95,6 +110,5 @@ class GameScene: SKScene {
     }
    
     override func update(currentTime: CFTimeInterval) {
-        /* Called before each frame is rendered */
     }
 }

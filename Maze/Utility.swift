@@ -60,6 +60,24 @@ func /(lhs: CGPoint, rhs: CGFloat) -> CGPoint {
     return CGPoint(x: lhs.x / rhs, y: lhs.y / rhs)
 }
 
+extension CGRect {
+    var center: CGPoint {
+        return CGPoint(x: midX, y: midY)
+    }
+}
+
+extension CGVector {
+    func magnitude() -> CGFloat {
+        return sqrt(dx * dx + dy * dy)
+    }
+    
+    func normalise() -> CGVector {
+        let m = magnitude()
+        
+        return CGVector(dx: dx / m, dy: dy / m)
+    }
+}
+
 class Utility {
     static func max(value1 value1: CGFloat, value2: CGFloat) -> CGFloat {
         return value1 > value2 ? value1 : value2

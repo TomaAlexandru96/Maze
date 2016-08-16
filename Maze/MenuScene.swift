@@ -15,7 +15,7 @@ class MenuScene: SKScene {
         backgroundColor = UIColor.blackColor()
         
         let playButton = SKButton(action: changeSceneToGameScene)
-        playButton.position = CGPoint(x: frame.midX, y: frame.midY)
+        playButton.position = frame.center
         playButton.text = "Play"
         
         addChild(playButton)
