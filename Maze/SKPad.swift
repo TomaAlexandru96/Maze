@@ -14,7 +14,39 @@ enum PadMode: Int {
 }
 
 enum PadDirection: Int {
-    case Top = 0, Right, Bottom, Left, None
+    case Top = 0, TopRight, Right, BottomRight, Bottom, BottomLeft, Left, TopLeft, None
+    
+    // returns a set of possible directions in a 4 directions game ({Top, Bottom, Left, Right})
+    func getPossiblePaths() -> Set<PadDirection> {
+        var set: Set<PadDirection> = []
+        
+        switch self {
+        case .TopRight:
+            set.insert(.Top)
+            set.insert(.Right)
+        case .TopLeft:
+            set.insert(.Top)
+            set.insert(.Left)
+        case .BottomRight:
+            set.insert(.Bottom)
+            set.insert(.Right)
+        case .BottomLeft:
+            set.insert(.Bottom)
+            set.insert(.Left)
+        default:
+            set.insert(self)
+        }
+        
+        return set
+    }
+    
+    func getOpposite() -> PadDirection {
+        if self == .None {
+            return .None
+        }
+        
+        return PadDirection(rawValue: (self.rawValue + 4) % 8)!
+    }
 }
 
 class SKPad: SKNode {
@@ -25,10 +57,6 @@ class SKPad: SKNode {
     private static let PAD_ALPHA: CGFloat = 2
     private static let NULLZONE_RANGE_RATIO: CGFloat = 0.3
     private static let TRANSPARENT_COLOR: UIColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0)
-    private static let ANGLE_45  = CGFloat(M_PI / 4)
-    private static let ANGLE_135 = CGFloat(3 * M_PI / 4)
-    private static let ANGLE_225 = CGFloat(5 * M_PI / 4)
-    private static let ANGLE_315 = CGFloat(7 * M_PI / 4)
     
     private let padShowAnimation = SKAction.fadeAlphaTo(PAD_ALPHA, duration: 0.1)
     private let padHideAnimation = SKAction.fadeAlphaTo(0, duration: 0.1)
@@ -40,6 +68,7 @@ class SKPad: SKNode {
     private let root: SKNode = SKNode()
     let rangeRadius: CGFloat
     let mode: PadMode
+    
     private var padShowAnimationActive: Bool = false
     private var padHideAnimationActive: Bool = false
     var disabled: Bool = false
@@ -163,21 +192,56 @@ class SKPad: SKNode {
     
     func getPadDirection() -> PadDirection {
         let direction = getPadDirectionAsVector()
-        let tuple = (x: direction.dx, y: direction.dy)
         
         if direction == CGVector.zero || pad.hidden || disabled {
             return .None
         }
         
-        switch tuple {
-        case let (x, y) where x < cos(SKPad.ANGLE_45) && x > cos(SKPad.ANGLE_135) &&
-                              y > sin(SKPad.ANGLE_45): return .Top
-        case let (x, y) where x < cos(SKPad.ANGLE_135) &&
-                              y < sin(SKPad.ANGLE_135) && y > sin(SKPad.ANGLE_225): return .Left
-        case let (x, y) where x > cos(SKPad.ANGLE_225) && x < cos(SKPad.ANGLE_315) &&
-                              y < sin(SKPad.ANGLE_225): return .Bottom
-        default: return .Right
+        let x: Double = Double(direction.dx)
+        let y: Double = Double(direction.dy)
+        
+        let angle22_5 = M_PI / 8
+        let angle67_5 = 3 * M_PI / 8
+        let angle112_5 = 5 * M_PI / 8
+        let angle157_5 = 7 * M_PI / 8
+        let angle202_5 = 9 * M_PI / 8
+        let angle247_5 = 11 * M_PI / 8
+        let angle292_5 = 13 * M_PI / 8
+        let angle337_5 = 15 * M_PI / 8
+        
+        if x > cos(angle22_5) &&
+            y < sin(angle22_5) && y > sin(angle337_5) {
+            return .Right
+        } else if x > cos(angle67_5) && x < cos(angle22_5) &&
+                    y < sin(angle67_5) && y > sin(angle22_5) {
+            return .TopRight
+        } else if x > cos(angle112_5) && x < cos(angle67_5) &&
+                    y > sin(angle67_5) {
+            return .Top
+        } else if x > cos(angle157_5) && x < cos(angle112_5) &&
+                    y > sin(angle157_5) && y < sin(angle112_5){
+            return .TopLeft
+        } else if x < cos(angle157_5) &&
+                    y > sin(angle202_5) && y < sin(angle157_5) {
+            return .Left
+        } else if x > cos(angle202_5) && x < cos(angle247_5) &&
+                    y > sin(angle247_5) && y < sin(angle202_5) {
+            return .BottomLeft
+        } else if x > cos(angle247_5) && x < cos(angle292_5) &&
+                    y < sin(angle247_5) {
+            return .Bottom
+        } else {
+            return .BottomRight
         }
+    }
+    
+    // gets distance from null zone to range as a value between (0, 1)
+    func getPadIntensity() -> CGFloat {
+        let nullRadius = rangeRadius * SKPad.NULLZONE_RANGE_RATIO
+        let padVector = CGVector(dx: pad.position.x, dy: pad.position.y)
+        let padRange = padVector.magnitude() < nullRadius ? 0 : padVector.magnitude() - nullRadius
+        
+        return padRange / (rangeRadius - nullRadius)
     }
     
     // animations and user interaction

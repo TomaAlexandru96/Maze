@@ -26,7 +26,12 @@ class GameViewController: UIViewController {
         currentScene.scaleMode = .AspectFill
         let scene = self.currentScene as! GameScene
         scene.gvc = self
-        scene.gameConfiguration = configuration
+        scene.gameConfiguration =
+            MazeConfiguration(rows: 40, columns: 40,
+                                    blockSize: MazeConfiguration.defaultConfig.blockSize,
+                                    wallThickness: MazeConfiguration.defaultConfig.wallThickness,
+                                    playerStartTile: MazeConfiguration.defaultConfig.playerStartTile,
+                                    exitTile: Tile(row: 40, column: 40))
         
         skView.presentScene(currentScene)
     }

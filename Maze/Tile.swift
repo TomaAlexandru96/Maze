@@ -11,7 +11,7 @@ struct Tile: Hashable, CustomStringConvertible {
     let column: Int
     
     var hashValue: Int {
-        return row * (DEFAULT_COLUMNS + 2) + column
+        return row * (MazeConfiguration.defaultConfig.columns + 2) + column
     }
     
     var description: String {

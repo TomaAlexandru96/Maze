@@ -20,11 +20,7 @@ class MenuScene: SKScene {
         let playButton = SKButton(action: changeSceneToGameScene)
         playButton.text = "Play"
         
-        let playFreeButton = SKButton(action: changeSceneToGameScene)
-        playFreeButton.text = "Play Free"
-        
         menuCluster.append(playButton)
-        menuCluster.append(playFreeButton)
         
         addChild(menuCluster)
     }

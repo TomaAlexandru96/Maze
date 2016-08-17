@@ -12,6 +12,7 @@ let DEFAULT_START_NODE: Tile = Tile(row: 1, column: 1)
 // top, right, bottom, left
 let NEIGHBOURS_VECTOR: [(i: Int, j: Int)] = [(-1, 0), (0, 1), (1, 0), (0, -1)]
 let DEFAULT_MAZE_COLOR = UIColor.whiteColor()
+let DEFAULT_MAZE_LOOPS = 5
 
 enum Orientation: Int {
     case Top = 0, Right, Bottom, Left
@@ -81,8 +82,8 @@ class MazeGenerator {
         let mazeSprite = SKSpriteNode()
         mazeSprite.anchorPoint =  CGPoint(x: 0, y: 1)
         mazeSprite.color = DEFAULT_MAZE_COLOR
-        mazeSprite.size = CGSize(width: CGFloat(conf.columns - 2) * (conf.blockSize + conf.wallThickness) + conf.wallThickness,
-                                 height: CGFloat(conf.rows - 2) * (conf.blockSize + conf.wallThickness) + conf.wallThickness)
+        mazeSprite.size = CGSize(width: CGFloat(conf.columns - 2) * (conf.blockSize.width + conf.wallThickness) + conf.wallThickness,
+                                 height: CGFloat(conf.rows - 2) * (conf.blockSize.height + conf.wallThickness) + conf.wallThickness)
         mazeSprite.position = CGPoint(x: -(mazeSprite.frame.width / 2),
                                       y: mazeSprite.frame.height / 2)
         
@@ -96,7 +97,7 @@ class MazeGenerator {
         for i in 1..<conf.rows {
             for j in 1..<conf.columns {
                 let gap = SKSpriteNode()
-                var pos = getTileMazeSpritePosition(conf, tile: Tile(row: i, column: j))
+                var pos = conf.getTilePosition(Tile(row: i, column: j))
                 
                 pos.x -= conf.wallThickness
                 pos.y += conf.wallThickness
@@ -135,19 +136,19 @@ class MazeGenerator {
         let wall = SKSpriteNode()
         wall.name = "\(node1) \(node2)"
         wall.color = UIColor.blackColor()
-        wall.size = CGSize(width: orientation.isHorizontal() ? conf.blockSize : conf.wallThickness,
-                          height: orientation.isHorizontal() ? conf.wallThickness : conf.blockSize)
+        wall.size = CGSize(width: orientation.isHorizontal() ? conf.blockSize.width : conf.wallThickness,
+                          height: orientation.isHorizontal() ? conf.wallThickness : conf.blockSize.height)
         wall.anchorPoint = CGPoint(x: 0, y: 1)
         
-        var pos = getTileMazeSpritePosition(conf, tile: node1)
+        var pos = conf.getTilePosition(node1)
         
         switch orientation {
         case .Top:
             pos.y += conf.wallThickness
         case .Right:
-            pos.x += conf.blockSize
+            pos.x += conf.blockSize.width
         case .Bottom:
-            pos.y -= conf.blockSize
+            pos.y -= conf.blockSize.height
         case .Left:
             pos.x -= conf.wallThickness
         }
@@ -159,17 +160,7 @@ class MazeGenerator {
     
     // AUX functions ----------------------------------------------------------------
     static private func getTrueConfiguration(conf: MazeConfiguration) -> MazeConfiguration {
-        return MazeConfiguration(rows: conf.rows + 2, columns: conf.columns + 2,
-                                 blockSize: conf.blockSize, wallThickness: conf.wallThickness)
-    }
-    
-    static private func getTileMazeSpritePosition(conf: MazeConfiguration, tile: Tile) -> CGPoint {
-        var result = CGPoint.zero
-        
-        result.x = conf.wallThickness + CGFloat(tile.column - 1) * (conf.blockSize + conf.wallThickness)
-        result.y = -(conf.wallThickness + CGFloat(tile.row - 1) * (conf.blockSize + conf.wallThickness))
-        
-        return result
+        return MazeConfiguration(rows: conf.rows + 2, columns: conf.columns + 2, blockSize: conf.blockSize, wallThickness: conf.wallThickness, playerStartTile: conf.playerStartTile, exitTile: conf.exitTile)
     }
     
     static private func getNeighbours(conf: MazeConfiguration, node: Tile) -> Set<Tile> {
@@ -198,7 +189,34 @@ class MazeGenerator {
         let conf = getTrueConfiguration(conf)
         var maze = generateFullGraph(conf)
         maze = randomDFS(conf, maze: maze, startNode: DEFAULT_START_NODE)
+        // insertLoops(conf, maze: maze)
         return maze
+    }
+    
+    static private func insertLoops(conf: MazeConfiguration, maze: [Tile : Set<Tile>]) {
+        func isBounds(tile: Tile) -> Bool {
+            return tile.row == 0 ||
+                    tile.column == 0 ||
+                    tile.row == conf.rows - 1 ||
+                    tile.column == conf.columns - 1
+        }
+        
+        func returnByIndex(index: Int) -> Tile {
+            for (i, tile) in maze.enumerate() {
+                if i == index {
+                    return tile.0
+                }
+            }
+            return Tile(row: conf.rows / 2, column: conf.columns / 2)
+        }
+        
+        for _ in 0..<DEFAULT_MAZE_LOOPS {
+            var tile: Tile = Tile(row: 0, column: 0)
+            while isBounds(tile) {
+                let randomIndex = Int(arc4random_uniform(UInt32(maze.count)))
+                tile = returnByIndex(randomIndex)
+            }
+        }
     }
     
     static private func generateFullGraph(conf: MazeConfiguration) -> [Tile : Set<Tile>] {
