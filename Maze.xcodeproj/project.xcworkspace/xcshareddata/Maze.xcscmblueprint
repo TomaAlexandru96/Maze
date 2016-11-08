@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "41668A0FD51E4708CF74B2DD5DF540997BA14A5D",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "41668A0FD51E4708CF74B2DD5DF540997BA14A5D" : 0,
+    "7F4CAF8AA69EC2BBAF0C9F9F9AB39822C7B8E92D" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "3CA221DD-9358-4AFD-B680-6B34CF991229",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "41668A0FD51E4708CF74B2DD5DF540997BA14A5D" : "Maze\/",
+    "7F4CAF8AA69EC2BBAF0C9F9F9AB39822C7B8E92D" : ".."
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Maze",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Maze.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Bartimaeus1073\/Maze.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "41668A0FD51E4708CF74B2DD5DF540997BA14A5D"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Bartimaeus1073\/Programming.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "7F4CAF8AA69EC2BBAF0C9F9F9AB39822C7B8E92D"
+    }
+  ]
+}

@@ -11,10 +11,10 @@ import SpriteKit
 class MenuScene: SKScene {
     var gvc: GameViewController!
     
-    override func didMoveToView(view: SKView) {
-        backgroundColor = UIColor.blackColor()
+    override func didMove(to view: SKView) {
+        backgroundColor = UIColor.black
         
-        let menuCluster = SKCluster(orientation: ClusterOrientation.Vertical)
+        let menuCluster = SKCluster(orientation: ClusterOrientation.vertical)
         menuCluster.position = frame.center
         
         let playButton = SKButton(action: changeSceneToGameScene)
@@ -25,7 +25,7 @@ class MenuScene: SKScene {
         addChild(menuCluster)
     }
     
-    func changeSceneToGameScene(sender: SKNode) {
+    func changeSceneToGameScene(_ sender: SKNode) {
         gvc.chenageViewToGameScene(MazeConfiguration.defaultConfig)
     }
 }

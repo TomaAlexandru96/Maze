@@ -19,11 +19,11 @@ class GameViewController: UIViewController {
         chenageViewToMenuScene()
     }
 
-    func chenageViewToGameScene(configuration: MazeConfiguration) {
+    func chenageViewToGameScene(_ configuration: MazeConfiguration) {
         let skView = self.view as! SKView
         
         currentScene = GameScene(size: skView.bounds.size)
-        currentScene.scaleMode = .AspectFill
+        currentScene.scaleMode = .aspectFill
         let scene = self.currentScene as! GameScene
         scene.gvc = self
         scene.gameConfiguration =
@@ -40,26 +40,26 @@ class GameViewController: UIViewController {
         let skView = self.view as! SKView
         
         currentScene = MenuScene(size: skView.bounds.size)
-        currentScene.scaleMode = .AspectFill
+        currentScene.scaleMode = .aspectFill
         let scene = self.currentScene as! MenuScene
         scene.gvc = self
         
         skView.presentScene(currentScene)
     }
     
-    override func shouldAutorotate() -> Bool {
+    override var shouldAutorotate : Bool {
         return true
     }
 
-    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-        if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
-            return .AllButUpsideDown
+    override var supportedInterfaceOrientations : UIInterfaceOrientationMask {
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            return .allButUpsideDown
         } else {
-            return .All
+            return .all
         }
     }
 
-    override func prefersStatusBarHidden() -> Bool {
+    override var prefersStatusBarHidden : Bool {
         return true
     }
 }

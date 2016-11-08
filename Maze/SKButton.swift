@@ -9,17 +9,17 @@
 import SpriteKit
 
 class SKButton: SKNode {
-    private static let LABEL_OVERSIZE_OFFSET: CGFloat = 20
-    private static let DEFAULT_BACKGROUND_COLOR: UIColor = UIColor.whiteColor()
-    private static let DEFAULT_TEXT_COLOR: UIColor = UIColor.blackColor()
-    private static let HIGHLIGHT_ALPHA: CGFloat = 0.7
-    private static let DEFAULT_ALPHA: CGFloat = 1
-    private static let DEFAULT_BUTTON_SIZE: CGSize = CGSize(width: 100, height: 50)
-    private static let DEFAULT_BUTTON_ACTION: (sender: SKNode) -> () = {(sender) in fatalError("Function not set in SKButton")}
+    fileprivate static let LABEL_OVERSIZE_OFFSET: CGFloat = 20
+    fileprivate static let DEFAULT_BACKGROUND_COLOR: UIColor = UIColor.white
+    fileprivate static let DEFAULT_TEXT_COLOR: UIColor = UIColor.black
+    fileprivate static let HIGHLIGHT_ALPHA: CGFloat = 0.7
+    fileprivate static let DEFAULT_ALPHA: CGFloat = 1
+    fileprivate static let DEFAULT_BUTTON_SIZE: CGSize = CGSize(width: 100, height: 50)
+    fileprivate static let DEFAULT_BUTTON_ACTION: (_ sender: SKNode) -> () = {(sender) in fatalError("Function not set in SKButton")}
     
-    private let root: SKNode = SKNode()
-    private let background: SKSpriteNode
-    private let textNode: SKLabelNode
+    fileprivate let root: SKNode = SKNode()
+    fileprivate let background: SKSpriteNode
+    fileprivate let textNode: SKLabelNode
     override var position: CGPoint {
         get {
             return root.position
@@ -137,34 +137,34 @@ class SKButton: SKNode {
         return "\(root)\n \(background)\n \(textNode)"
     }
     
-    var action: ((sender: SKNode) -> ())
+    var action: ((_ sender: SKNode) -> ())
     
-    init(texture: SKTexture?, size: CGSize, action: (sender: SKNode) -> ()) {
+    init(texture: SKTexture?, size: CGSize, action: @escaping (_ sender: SKNode) -> ()) {
         self.background = SKSpriteNode(texture: texture)
         self.textNode = SKLabelNode()
         self.action = action
         super.init()
         self.size = size
-        self.userInteractionEnabled = true
+        self.isUserInteractionEnabled = true
         addChild(root)
         setTextNode()
         setBackground()
     }
     
-    private func setTextNode() {
+    fileprivate func setTextNode() {
         textColor = SKButton.DEFAULT_TEXT_COLOR
-        horizontalAlignmentMode = .Center
-        verticalAlignmentMode = .Center
+        horizontalAlignmentMode = .center
+        verticalAlignmentMode = .center
         textNode.zPosition = background.zPosition + 1
         root.addChild(textNode)
     }
     
-    private func setBackground() {
+    fileprivate func setBackground() {
         backgroundColor = SKButton.DEFAULT_BACKGROUND_COLOR
         root.addChild(background)
     }
     
-    private func resizeToFitLabel() {
+    fileprivate func resizeToFitLabel() {
         let textFrameSize = textNode.frame.size
         background.size.width = max(textFrameSize.width + SKButton.LABEL_OVERSIZE_OFFSET, background.size.width)
         background.size.height = max(textFrameSize.height + SKButton.LABEL_OVERSIZE_OFFSET, background.size.height)
@@ -174,7 +174,7 @@ class SKButton: SKNode {
         self.init(texture: nil, size: SKButton.DEFAULT_BUTTON_SIZE, action: SKButton.DEFAULT_BUTTON_ACTION)
     }
     
-    convenience init(action: (sender: SKNode) -> ()) {
+    convenience init(action: @escaping (_ sender: SKNode) -> ()) {
         self.init(texture: nil, size: SKButton.DEFAULT_BUTTON_SIZE, action: action)
     }
     
@@ -186,16 +186,16 @@ class SKButton: SKNode {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         root.alpha = SKButton.HIGHLIGHT_ALPHA
     }
     
-    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         root.alpha = SKButton.DEFAULT_ALPHA
         for touch in touches {
-            for node in nodesAtPoint(touch.locationInNode(self)) {
+            for node in nodes(at: touch.location(in: self)) {
                 if node == background {
-                    action(sender: self)
+                    action(self)
                     return
                 }
             }

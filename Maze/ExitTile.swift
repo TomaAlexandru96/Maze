@@ -9,7 +9,7 @@
 import SpriteKit
 
 class ExitTile {
-    private static let DEFAULT_COLOR: UIColor = UIColor.greenColor()
+    fileprivate static let DEFAULT_COLOR: UIColor = UIColor.green
     let mazeConfiguration: MazeConfiguration
     let position: Tile
     var sprite: SKSpriteNode!
@@ -19,7 +19,7 @@ class ExitTile {
         self.position = mazeConfiguration.exitTile
     }
     
-    func setSprite(root: SKNode) {
+    func setSprite(_ root: SKNode) {
         sprite = SKSpriteNode()
         sprite.position = mazeConfiguration.getTilePosition(mazeConfiguration.exitTile)
         sprite.color = ExitTile.DEFAULT_COLOR

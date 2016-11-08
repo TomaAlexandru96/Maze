@@ -9,12 +9,12 @@
 import SpriteKit
 
 enum ClusterOrientation: Int {
-    case Vertical = 0, Horizontal
+    case vertical = 0, horizontal
 }
 
 class SKCluster: SKNode {
-    private static let DEFAULT_CLUSTER_ORIENTATION = ClusterOrientation.Vertical
-    private static let DEFAULT_SPACING: CGFloat = 20
+    fileprivate static let DEFAULT_CLUSTER_ORIENTATION = ClusterOrientation.vertical
+    fileprivate static let DEFAULT_SPACING: CGFloat = 20
     
     let root: SKNode
     var orientation: ClusterOrientation {
@@ -27,7 +27,7 @@ class SKCluster: SKNode {
             placeCluster()
         }
     }
-    private var elements: [SKNode]
+    fileprivate var elements: [SKNode]
     
     override var position: CGPoint {
         get {
@@ -61,16 +61,16 @@ class SKCluster: SKNode {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func append(node: SKNode) {
+    func append(_ node: SKNode) {
         elements.append(node)
         placeCluster()
     }
     
-    private func placeCluster() {
+    fileprivate func placeCluster() {
         let totalSize = getTotalOrientationSize()
         root.removeAllChildren()
         
-        if orientation == ClusterOrientation.Vertical {
+        if orientation == ClusterOrientation.vertical {
             var nextPositionY = totalSize / 2
             for element in elements {
                 let elementFrameHeight = element.calculateAccumulatedFrame().height
@@ -90,9 +90,9 @@ class SKCluster: SKNode {
         }
     }
     
-    private func getTotalOrientationSize() -> CGFloat {
+    fileprivate func getTotalOrientationSize() -> CGFloat {
         var totalOrientation: CGFloat = 0
-        if orientation == ClusterOrientation.Horizontal {
+        if orientation == ClusterOrientation.horizontal {
             for element in elements {
                 totalOrientation += element.calculateAccumulatedFrame().width
             }

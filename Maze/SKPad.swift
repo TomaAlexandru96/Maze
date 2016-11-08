@@ -10,29 +10,29 @@ import SpriteKit
 import Darwin
 
 enum PadMode: Int {
-    case Static = 0, Dynamic
+    case `static` = 0, dynamic
 }
 
 enum PadDirection: Int {
-    case Top = 0, TopRight, Right, BottomRight, Bottom, BottomLeft, Left, TopLeft, None
+    case top = 0, topRight, right, bottomRight, bottom, bottomLeft, left, topLeft, none
     
     // returns a set of possible directions in a 4 directions game ({Top, Bottom, Left, Right})
     func getPossiblePaths() -> Set<PadDirection> {
         var set: Set<PadDirection> = []
         
         switch self {
-        case .TopRight:
-            set.insert(.Top)
-            set.insert(.Right)
-        case .TopLeft:
-            set.insert(.Top)
-            set.insert(.Left)
-        case .BottomRight:
-            set.insert(.Bottom)
-            set.insert(.Right)
-        case .BottomLeft:
-            set.insert(.Bottom)
-            set.insert(.Left)
+        case .topRight:
+            set.insert(.top)
+            set.insert(.right)
+        case .topLeft:
+            set.insert(.top)
+            set.insert(.left)
+        case .bottomRight:
+            set.insert(.bottom)
+            set.insert(.right)
+        case .bottomLeft:
+            set.insert(.bottom)
+            set.insert(.left)
         default:
             set.insert(self)
         }
@@ -41,8 +41,8 @@ enum PadDirection: Int {
     }
     
     func getOpposite() -> PadDirection {
-        if self == .None {
-            return .None
+        if self == .none {
+            return .none
         }
         
         return PadDirection(rawValue: (self.rawValue + 4) % 8)!
@@ -50,27 +50,27 @@ enum PadDirection: Int {
 }
 
 class SKPad: SKNode {
-    private static let DEFAULT_RADIUS: CGFloat = 50
-    private static let DEFAULT_COLOR: UIColor = UIColor.whiteColor()
-    private static let PAD_RANGE_RATIO: CGFloat = 0.5
-    private static let RANGE_ALPHA: CGFloat = 0.3
-    private static let PAD_ALPHA: CGFloat = 2
-    private static let NULLZONE_RANGE_RATIO: CGFloat = 0.3
-    private static let TRANSPARENT_COLOR: UIColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0)
+    fileprivate static let DEFAULT_RADIUS: CGFloat = 50
+    fileprivate static let DEFAULT_COLOR: UIColor = UIColor.white
+    fileprivate static let PAD_RANGE_RATIO: CGFloat = 0.5
+    fileprivate static let RANGE_ALPHA: CGFloat = 0.3
+    fileprivate static let PAD_ALPHA: CGFloat = 2
+    fileprivate static let NULLZONE_RANGE_RATIO: CGFloat = 0.3
+    fileprivate static let TRANSPARENT_COLOR: UIColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0)
     
-    private let padShowAnimation = SKAction.fadeAlphaTo(PAD_ALPHA, duration: 0.1)
-    private let padHideAnimation = SKAction.fadeAlphaTo(0, duration: 0.1)
-    private let rangeShowAnimation = SKAction.fadeAlphaTo(RANGE_ALPHA, duration: 0.2)
-    private let rangeHideAnimation = SKAction.fadeAlphaTo(0, duration: 0.2)
-    private let range: SKShapeNode
-    private let pad: SKShapeNode
-    private let touchZone: SKSpriteNode
-    private let root: SKNode = SKNode()
+    fileprivate let padShowAnimation = SKAction.fadeAlpha(to: PAD_ALPHA, duration: 0.1)
+    fileprivate let padHideAnimation = SKAction.fadeAlpha(to: 0, duration: 0.1)
+    fileprivate let rangeShowAnimation = SKAction.fadeAlpha(to: RANGE_ALPHA, duration: 0.2)
+    fileprivate let rangeHideAnimation = SKAction.fadeAlpha(to: 0, duration: 0.2)
+    fileprivate let range: SKShapeNode
+    fileprivate let pad: SKShapeNode
+    fileprivate let touchZone: SKSpriteNode
+    fileprivate let root: SKNode = SKNode()
     let rangeRadius: CGFloat
     let mode: PadMode
     
-    private var padShowAnimationActive: Bool = false
-    private var padHideAnimationActive: Bool = false
+    fileprivate var padShowAnimationActive: Bool = false
+    fileprivate var padHideAnimationActive: Bool = false
     var disabled: Bool = false
     
     override var position: CGPoint {
@@ -109,14 +109,14 @@ class SKPad: SKNode {
     }
     
     convenience override init() {
-        self.init(radius: SKPad.DEFAULT_RADIUS, mode: PadMode.Static, touchZone: CGSize.zero)
+        self.init(radius: SKPad.DEFAULT_RADIUS, mode: PadMode.static, touchZone: CGSize.zero)
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setProperties() {
+    fileprivate func setProperties() {
         color = SKPad.DEFAULT_COLOR
         
         setTouchZone()
@@ -124,40 +124,40 @@ class SKPad: SKNode {
         setPad()
         
         addChild(root)
-        userInteractionEnabled = true
+        isUserInteractionEnabled = true
     }
     
-    private func setTouchZone() {
+    fileprivate func setTouchZone() {
         touchZone.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         
         root.addChild(touchZone)
     }
     
-    private func setRange() {
+    fileprivate func setRange() {
         range.alpha = SKPad.RANGE_ALPHA
         range.zPosition = touchZone.zPosition + 1
         
-        if mode == PadMode.Dynamic {
+        if mode == PadMode.dynamic {
             range.alpha = 0
-            range.hidden = true
+            range.isHidden = true
         }
         
         touchZone.addChild(range)
     }
     
-    private func setPad() {
+    fileprivate func setPad() {
         pad.alpha = 0
         pad.zPosition = range.zPosition + 1
-        pad.hidden = true
+        pad.isHidden = true
         
-        if mode == PadMode.Dynamic {
+        if mode == PadMode.dynamic {
             pad.alpha = SKPad.PAD_ALPHA
         }
         
         range.addChild(pad)
     }
     
-    private func setPadPosition(location: CGPoint) {
+    fileprivate func setPadPosition(_ location: CGPoint) {
         pad.position = location
         
         if !isInRange(pad.position) {
@@ -167,14 +167,14 @@ class SKPad: SKNode {
         }
     }
     
-    private func isInRange(location: CGPoint) -> Bool {
+    fileprivate func isInRange(_ location: CGPoint) -> Bool {
         let direction = CGVector(dx: location.x, dy: location.y)
         
         return direction.magnitude() <= rangeRadius
     }
     
-    private func getPadDirectionAsVector(point: CGPoint) -> CGVector {
-        if pad.hidden || disabled {
+    fileprivate func getPadDirectionAsVector(_ point: CGPoint) -> CGVector {
+        if pad.isHidden || disabled {
             return CGVector.zero
         }
         
@@ -193,8 +193,8 @@ class SKPad: SKNode {
     func getPadDirection() -> PadDirection {
         let direction = getPadDirectionAsVector()
         
-        if direction == CGVector.zero || pad.hidden || disabled {
-            return .None
+        if direction == CGVector.zero || pad.isHidden || disabled {
+            return .none
         }
         
         let x: Double = Double(direction.dx)
@@ -211,27 +211,27 @@ class SKPad: SKNode {
         
         if x > cos(angle22_5) &&
             y < sin(angle22_5) && y > sin(angle337_5) {
-            return .Right
+            return .right
         } else if x > cos(angle67_5) && x < cos(angle22_5) &&
                     y < sin(angle67_5) && y > sin(angle22_5) {
-            return .TopRight
+            return .topRight
         } else if x > cos(angle112_5) && x < cos(angle67_5) &&
                     y > sin(angle67_5) {
-            return .Top
+            return .top
         } else if x > cos(angle157_5) && x < cos(angle112_5) &&
                     y > sin(angle157_5) && y < sin(angle112_5){
-            return .TopLeft
+            return .topLeft
         } else if x < cos(angle157_5) &&
                     y > sin(angle202_5) && y < sin(angle157_5) {
-            return .Left
+            return .left
         } else if x > cos(angle202_5) && x < cos(angle247_5) &&
                     y > sin(angle247_5) && y < sin(angle202_5) {
-            return .BottomLeft
+            return .bottomLeft
         } else if x > cos(angle247_5) && x < cos(angle292_5) &&
                     y < sin(angle247_5) {
-            return .Bottom
+            return .bottom
         } else {
-            return .BottomRight
+            return .bottomRight
         }
     }
     
@@ -245,7 +245,7 @@ class SKPad: SKNode {
     }
     
     // animations and user interaction
-    private func hidePad() {
+    fileprivate func hidePad() {
         guard !padHideAnimationActive else {
             return
         }
@@ -255,21 +255,21 @@ class SKPad: SKNode {
         }
         
         padHideAnimationActive = true
-        if mode == PadMode.Static {
-            pad.runAction(padHideAnimation, completion: {
-                self.pad.hidden = true
+        if mode == PadMode.static {
+            pad.run(padHideAnimation, completion: {
+                self.pad.isHidden = true
                 self.padHideAnimationActive = false
             })
         } else {
-            range.runAction(rangeHideAnimation, completion: {
-                self.pad.hidden = true
-                self.range.hidden = true
+            range.run(rangeHideAnimation, completion: {
+                self.pad.isHidden = true
+                self.range.isHidden = true
                 self.padHideAnimationActive = false
             })
         }
     }
     
-    private func showPad() {
+    fileprivate func showPad() {
         guard !padShowAnimationActive else {
             return
         }
@@ -283,24 +283,24 @@ class SKPad: SKNode {
             self.padShowAnimationActive = false
         }
         
-        pad.hidden = false
-        if mode == PadMode.Static {
-            pad.runAction(padShowAnimation, completion: completition)
+        pad.isHidden = false
+        if mode == PadMode.static {
+            pad.run(padShowAnimation, completion: completition)
         } else {
-            range.hidden = false
-            range.runAction(rangeShowAnimation, completion: completition)
+            range.isHidden = false
+            range.run(rangeShowAnimation, completion: completition)
         }
     }
     
-    private func removeAnimations() {
+    fileprivate func removeAnimations() {
         pad.removeAllActions()
         range.removeAllActions()
         padShowAnimationActive = false
         padHideAnimationActive = false
     }
     
-    private func isInTouchZone(location: CGPoint) -> Bool {
-        if mode == PadMode.Static {
+    fileprivate func isInTouchZone(_ location: CGPoint) -> Bool {
+        if mode == PadMode.static {
             return true
         }
         
@@ -310,8 +310,8 @@ class SKPad: SKNode {
                 location.y < touchZone.size.height / 2
     }
     
-    private func placePad(location: CGPoint) {
-        if mode == PadMode.Static {
+    fileprivate func placePad(_ location: CGPoint) {
+        if mode == PadMode.static {
             showPad()
         } else {
             if isInTouchZone(location) {
@@ -320,26 +320,26 @@ class SKPad: SKNode {
             }
         }
     
-        setPadPosition(root.convertPoint(location, toNode: range))
+        setPadPosition(root.convert(location, to: range))
     }
     
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let firstTouch = touches.first else {
             return
         }
         
-        placePad(firstTouch.locationInNode(root))
+        placePad(firstTouch.location(in: root))
     }
     
-    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let firstTouch = touches.first else {
             return
         }
         
-        setPadPosition(firstTouch.locationInNode(range))
+        setPadPosition(firstTouch.location(in: range))
     }
     
-    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let _ = touches.first else {
             return
         }
@@ -347,7 +347,7 @@ class SKPad: SKNode {
         hidePad()
     }
     
-    override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) {
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         hidePad()
     }
 }

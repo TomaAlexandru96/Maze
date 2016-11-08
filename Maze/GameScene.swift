@@ -20,13 +20,13 @@ class GameScene: SKScene, GameDelegate {
     let gameUILayer: SKNode = SKNode()
     let winScreen: SKNode = SKNode()
     let winLabel: SKLabelNode = SKLabelNode()
-    let gamePad: SKPad = SKPad(mode: PadMode.Dynamic, touchZone: PAD_TOUCH_ZONE_SIZE)
+    let gamePad: SKPad = SKPad(mode: PadMode.dynamic, touchZone: PAD_TOUCH_ZONE_SIZE)
     var game: Maze!
     var gvc: GameViewController!
     var gameConfiguration: MazeConfiguration = MazeConfiguration.defaultConfig
     
-    override func didMoveToView(view: SKView) {
-        backgroundColor = UIColor.blackColor()
+    override func didMove(to view: SKView) {
+        backgroundColor = UIColor.black
         setGestures(view)
         setGameObjects()
         setUIObjects()
@@ -44,7 +44,7 @@ class GameScene: SKScene, GameDelegate {
     func setUIObjects() {
         var padPositionOnScreen = CGPoint(x: frame.minX + PAD_OFFSET, y: frame.minY + PAD_OFFSET)
         gameUILayer.position = frame.center
-        padPositionOnScreen = gameUILayer.convertPoint(padPositionOnScreen, fromNode: self)
+        padPositionOnScreen = gameUILayer.convert(padPositionOnScreen, from: self)
         gamePad.position = padPositionOnScreen
         
         setWinScreen()
@@ -61,20 +61,20 @@ class GameScene: SKScene, GameDelegate {
         let label1 = SKLabelNode()
         label1.fontName = "Arial-Bold"
         label1.fontSize = 70
-        label1.fontColor = UIColor.orangeColor()
+        label1.fontColor = UIColor.orange
         label1.name = "winLabel"
         label1.text = "You reached the exit"
         
         winLabel.fontName = "Arial-Bold"
         winLabel.fontSize = 70
-        winLabel.fontColor = UIColor.orangeColor()
+        winLabel.fontColor = UIColor.orange
         winLabel.name = "winLabel"
         
         let resetButton = SKButton(action: reset)
         resetButton.text = "Play Again"
-        resetButton.textColor = UIColor.orangeColor()
+        resetButton.textColor = UIColor.orange
         resetButton.fontName = "Arial-Bold"
-        resetButton.backgroundColor = UIColor.clearColor()
+        resetButton.backgroundColor = UIColor.clear
         resetButton.name = "resetButton"
         
         winCluster.append(label1)
@@ -82,27 +82,27 @@ class GameScene: SKScene, GameDelegate {
         winCluster.append(resetButton)
         winCluster.spacing = 40
         
-        winScreen.hidden = true
+        winScreen.isHidden = true
         
         winScreen.addChild(winCluster)
         winScreen.addChild(background)
         gameUILayer.addChild(winScreen)
     }
     
-    func setGestures(view: SKView) {
+    func setGestures(_ view: SKView) {
         let zoomGesture =  UIPinchGestureRecognizer(target: self, action: #selector(GameScene.zoom))
         view.addGestureRecognizer(zoomGesture)
     }
     
-    func zoom(sender: UIPinchGestureRecognizer) {
+    func zoom(_ sender: UIPinchGestureRecognizer) {
         struct Holder {
             static var gameScale: CGFloat = 1
         }
         
         switch sender.state {
-        case .Began:
+        case .began:
             Holder.gameScale = gameObjectsLayer.xScale
-        case .Changed:
+        case .changed:
             let scaleFactor = sender.scale * Holder.gameScale
             
             gameObjectsLayer.xScale = Utility.clamp(value: scaleFactor,
@@ -116,7 +116,7 @@ class GameScene: SKScene, GameDelegate {
     
     func clampGameObjectsToBounds() {
         _ = gameObjectsLayer.children.map({ (child) in
-            var positionInLayer = gameObjectsLayer.convertPoint(child.position, toNode: self)
+            var positionInLayer = gameObjectsLayer.convert(child.position, to: self)
             let boundRelativeToSizeX = Utility.clamp(value: BOUNDS_OFFSET * gameObjectsLayer.xScale,
                 min: 0,
                 max: frame.width / 2)
@@ -130,17 +130,17 @@ class GameScene: SKScene, GameDelegate {
             positionInLayer.y = Utility.clamp(value: positionInLayer.y,
                 min: frame.minY + boundRelativeToSizeY,
                 max: frame.maxY - boundRelativeToSizeY + child.frame.size.height * gameObjectsLayer.yScale)
-            child.position = gameObjectsLayer.convertPoint(positionInLayer, fromNode: self)
+            child.position = gameObjectsLayer.convert(positionInLayer, from: self)
         })
     }
     
-    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let firstTouch = touches.first else {
             return
         }
         
-        let prev = firstTouch.previousLocationInNode(self)
-        let current = firstTouch.locationInNode(self)
+        let prev = firstTouch.previousLocation(in: self)
+        let current = firstTouch.location(in: self)
         let offset = CGPoint(x: prev.x - current.x, y: prev.y - current.y)
         
         _ = gameObjectsLayer.children.map({ (child) in
@@ -150,16 +150,16 @@ class GameScene: SKScene, GameDelegate {
         clampGameObjectsToBounds()
     }
    
-    override func update(currentTime: CFTimeInterval) {
+    override func update(_ currentTime: TimeInterval) {
         game.update(gamePad.getPadDirection(), intensity: gamePad.getPadIntensity())
     }
     
-    func reset(sender: SKNode) {
+    func reset(_ sender: SKNode) {
         game.generateNewMaze()
-        winScreen.hidden = true
+        winScreen.isHidden = true
         game.setSprites(gameObjectsLayer)
-        gameObjectsLayer.hidden = false
-        gamePad.userInteractionEnabled = true
+        gameObjectsLayer.isHidden = false
+        gamePad.isUserInteractionEnabled = true
         scaleMazeToFit()
     }
     
@@ -174,10 +174,10 @@ class GameScene: SKScene, GameDelegate {
     }
     
     // delegate functions
-    func gameEnded(tileNumber: Int) {
-        winScreen.hidden = false
+    func gameEnded(_ tileNumber: Int) {
+        winScreen.isHidden = false
         winLabel.text = "in \(tileNumber) tiles!"
-        gameObjectsLayer.hidden = true
-        gamePad.userInteractionEnabled = false
+        gameObjectsLayer.isHidden = true
+        gamePad.isUserInteractionEnabled = false
     }
 }

@@ -9,11 +9,11 @@
 import SpriteKit
 
 protocol GameDelegate {
-    func gameEnded(tileNumber: Int)
+    func gameEnded(_ tileNumber: Int)
 }
 
 class Maze {
-    private let gameDelegate: GameDelegate
+    fileprivate let gameDelegate: GameDelegate
     let configuration: MazeConfiguration
     var sprite: SKSpriteNode
     var player: Player
@@ -38,8 +38,8 @@ class Maze {
         player.maze = MazeGenerator.generateNewMaze(configuration: configuration)
     }
     
-    func setSprites(root: SKNode) {
-        root.removeChildrenInArray([sprite])
+    func setSprites(_ root: SKNode) {
+        root.removeChildren(in: [sprite])
         sprite.removeAllChildren()
         sprite = MazeGenerator.getMazeSprite(configuration: configuration, maze: player.maze)
         player.setSprite(sprite)
@@ -48,7 +48,7 @@ class Maze {
         root.addChild(sprite)
     }
     
-    func update(direction: PadDirection, intensity: CGFloat) {
+    func update(_ direction: PadDirection, intensity: CGFloat) {
         player.movePlayer(direction, intensity: intensity)
     }
 }

@@ -9,12 +9,12 @@
 import SpriteKit
 
 class MazeConfiguration {
-    private static let DEFAULT_ROWS: Int = 20
-    private static let DEFAULT_COLUMNS: Int = 20
-    private static let DEFAULT_BLOCK_SIZE: CGSize = CGSize(width: 5, height: 5)
-    private static let DEFAULT_WALL_THICKNESS: CGFloat = 2.5
-    private static let DEFAULT_PLAYER_START_TILE: Tile = Tile(row: 1, column: 1)
-    private static let DEFAULT_EXIT_TILE: Tile = Tile(row: MazeConfiguration.DEFAULT_ROWS,
+    fileprivate static let DEFAULT_ROWS: Int = 20
+    fileprivate static let DEFAULT_COLUMNS: Int = 20
+    fileprivate static let DEFAULT_BLOCK_SIZE: CGSize = CGSize(width: 5, height: 5)
+    fileprivate static let DEFAULT_WALL_THICKNESS: CGFloat = 2.5
+    fileprivate static let DEFAULT_PLAYER_START_TILE: Tile = Tile(row: 1, column: 1)
+    fileprivate static let DEFAULT_EXIT_TILE: Tile = Tile(row: MazeConfiguration.DEFAULT_ROWS,
                                                       column: MazeConfiguration.DEFAULT_COLUMNS)
     static let defaultConfig: MazeConfiguration =
                     MazeConfiguration(rows: DEFAULT_ROWS,
@@ -48,7 +48,7 @@ class MazeConfiguration {
                   exitTile: MazeConfiguration.DEFAULT_EXIT_TILE)
     }
     
-    func getTilePosition(tile: Tile) -> CGPoint {
+    func getTilePosition(_ tile: Tile) -> CGPoint {
         var result = CGPoint.zero
         
         result.x = wallThickness + CGFloat(tile.column - 1) * (blockSize.width + wallThickness)

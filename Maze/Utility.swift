@@ -8,16 +8,16 @@
 
 import SpriteKit
 
-func -=(inout lhs: CGPoint, rhs: CGPoint) {
+func -=(lhs: inout CGPoint, rhs: CGPoint) {
     lhs = lhs - rhs
 }
-func +=(inout lhs: CGPoint, rhs: CGPoint) {
+func +=(lhs: inout CGPoint, rhs: CGPoint) {
     lhs = lhs + rhs
 }
-func *=(inout lhs: CGPoint, rhs: CGPoint) {
+func *=(lhs: inout CGPoint, rhs: CGPoint) {
     lhs = lhs * rhs
 }
-func /=(inout lhs: CGPoint, rhs: CGPoint) {
+func /=(lhs: inout CGPoint, rhs: CGPoint) {
     lhs = lhs / rhs
 }
 
@@ -34,16 +34,16 @@ func /(lhs: CGPoint, rhs: CGPoint) -> CGPoint {
     return CGPoint(x: lhs.x / rhs.x, y: lhs.y / rhs.y)
 }
 
-func -=(inout lhs: CGPoint, rhs: CGFloat) {
+func -=(lhs: inout CGPoint, rhs: CGFloat) {
     lhs = lhs - rhs
 }
-func +=(inout lhs: CGPoint, rhs: CGFloat) {
+func +=(lhs: inout CGPoint, rhs: CGFloat) {
     lhs = lhs + rhs
 }
-func *=(inout lhs: CGPoint, rhs: CGFloat) {
+func *=(lhs: inout CGPoint, rhs: CGFloat) {
     lhs = lhs * rhs
 }
-func /=(inout lhs: CGPoint, rhs: CGFloat) {
+func /=(lhs: inout CGPoint, rhs: CGFloat) {
     lhs = lhs / rhs
 }
 
@@ -79,15 +79,15 @@ extension CGVector {
 }
 
 class Utility {
-    static func max(value1 value1: CGFloat, value2: CGFloat) -> CGFloat {
+    static func max(value1: CGFloat, value2: CGFloat) -> CGFloat {
         return value1 > value2 ? value1 : value2
     }
     
-    static func min(value1 value1: CGFloat, value2: CGFloat) -> CGFloat {
+    static func min(value1: CGFloat, value2: CGFloat) -> CGFloat {
         return value1 < value2 ? value1 : value2
     }
     
-    static func clamp(value value: CGFloat, min: CGFloat, max: CGFloat) -> CGFloat {
+    static func clamp(value: CGFloat, min: CGFloat, max: CGFloat) -> CGFloat {
         var result = value
         
         result = Utility.max(value1: result, value2: min)
